@@ -6,11 +6,7 @@
   "homepage": "https://evilgoku.github.io/game-web3wallet/",
   "scripts": {
     "start": "parcel index.html --open",
-<<<<<<< HEAD
     "build": "parcel build ./index.html --public-url /game-web3wallet --target node --bundle-node-modules --out-dir ./dist --no-minify --out-file index.html"
-=======
-    "build": "parcel build ./index.html --target node --bundle-node-modules --out-dir ./dist --no-minify --out-file index.html"
->>>>>>> parent of 9f5414b (PAtched)
   },
   "dependencies": {
     "ethers": "5.5.1",
