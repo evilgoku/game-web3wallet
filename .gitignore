@@ -24,6 +24,4 @@ yarn-error.log*
 
 .cache
 
-.yarn
-
 /dist
