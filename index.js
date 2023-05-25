@@ -7,6 +7,196 @@ let signer;
 
 document.addEventListener("DOMContentLoaded", loadApp());
 
+const desiredNetworks = [
+	{
+        chainId: '0x38',
+        chainName: 'Binance Smart Chain Mainnet',
+        nativeCurrency: {
+            name: 'BNB',
+            symbol: 'BNB',
+            decimals: 18
+        },
+        rpcUrls: ['https://bsc-dataseed.binance.org/'],
+        blockExplorerUrls: ['https://bscscan.com']
+    },
+    {
+        chainId: '0x61',
+        chainName: 'Binance Smart Chain Testnet',
+        nativeCurrency: {
+            name: 'BNB',
+            symbol: 'BNB',
+            decimals: 18
+        },
+        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+        blockExplorerUrls: ['https://testnet.bscscan.com']
+    },
+    {
+        chainId: '0x89',
+        chainName: 'Polygon Mainnet',
+        nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18
+        },
+        rpcUrls: ['https://polygon-rpc.com/'],
+        blockExplorerUrls: ['https://polygonscan.com/']
+    },
+    {
+        chainId: '0x4E454153',
+        chainName: 'Aurora Testnet',
+        nativeCurrency: {
+            name: 'ETH',
+            symbol: 'ETH',
+            decimals: 18
+        },
+        rpcUrls: ['https://testnet.aurora.dev'],
+        blockExplorerUrls: ['https://testnet.aurorascan.dev']
+    },
+    {
+        chainId: '0x4E454152',
+        chainName: 'Aurora Mainnet',
+        nativeCurrency: {
+            name: 'ETH',
+            symbol: 'ETH',
+            decimals: 18
+        },
+        rpcUrls: ['https://mainnet.aurora.dev'],
+        blockExplorerUrls: ['https://explorer.aurora.dev/']
+    },
+    {
+        chainId: '0x8AD',
+        chainName: 'Kava EVM Testnet',
+        nativeCurrency: {
+            name: 'KAVA',
+            symbol: 'KAVA',
+            decimals: 18
+        },
+        rpcUrls: ['https://evm.evm-alpha.kava.io'],
+        blockExplorerUrls: ['https://explorer.evm-alpha.kava.io']
+    },
+    {
+        chainId: '0x8AE',
+        chainName: 'Kava EVM',
+        nativeCurrency: {
+            name: 'KAVA',
+            symbol: 'KAVA',
+            decimals: 18
+        },
+        rpcUrls: ['https://evm.kava.io'],
+        blockExplorerUrls: ['https://explorer.kava.io']
+    },
+    {
+        chainId: '0x3E9',
+        chainName: 'Klaytn Baobab',
+        nativeCurrency: {
+            name: 'KLAY',
+            symbol: 'KLAY',
+            decimals: 18
+        },
+        rpcUrls: ['https://api.baobab.klaytn.net:8651'],
+        blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
+    },
+    {
+        chainId: '0x4',
+        chainName: 'Rinkeby Test Network',
+        nativeCurrency: {
+            name: 'RinkebyETH',
+            symbol: 'RinkebyETH',
+            decimals: 18
+        },
+        rpcUrls: ['https://rinkeby.infura.io/v3/'],
+        blockExplorerUrls: ['https://rinkeby.etherscan.io/']
+    },
+    {
+        chainId: '0x12',
+        chainName: 'ThunderCore Test Network',
+        nativeCurrency: {
+            name: 'TST',
+            symbol: 'TST',
+            decimals: 18
+        },
+        rpcUrls: ['https://testnet-rpc.thundercore.com'],
+        blockExplorerUrls: ['https://explorer-testnet.thundercore.com']
+    },
+    {
+        chainId: '0x3CC3',
+        chainName: 'Trust Tesnet',
+        nativeCurrency: {
+            name: 'EVM',
+            symbol: 'EVM',
+            decimals: 18
+        },
+        rpcUrls: ['https://api.testnet-dev.trust.one'],
+        blockExplorerUrls: ['https://trustscan.one']
+    },
+    {
+        chainId: '0x2328',
+        chainName: 'Evmos Testnet',
+        nativeCurrency: {
+            name: 'tEVMOS',
+            symbol: 'tEVMOS',
+            decimals: 18
+        },
+        rpcUrls: ['https://eth.bd.evmos.dev:8545'],
+        blockExplorerUrls: ['https://evm.evmos.dev']
+    },
+    {
+        chainId: '0x501',
+        chainName: 'Octopus Testnet',
+        nativeCurrency: {
+            name: 'EBAR',
+            symbol: 'EBAR',
+            decimals: 18
+        },
+        rpcUrls: ['https://gateway.testnet.octopus.network/barnacle-evm/wj1hhcverunusc35jifki19otd4od1n5'],
+        blockExplorerUrls: ['https://explorer.testnet.oct.network/barnacle-evm']
+    },
+    {
+        chainId: '0x405',
+        chainName: 'BitTorrent Chain Donau',
+        nativeCurrency: {
+            name: 'BTT',
+            symbol: 'BTT',
+            decimals: 18
+        },
+        rpcUrls: ['https://pre-rpc.bt.io/'],
+        blockExplorerUrls: ['https://testscan.bt.io/']
+    },
+    {
+        chainId: '0xC365',
+        chainName: 'GTON Testnet',
+        nativeCurrency: {
+            name: 'GCD',
+            symbol: 'GCD',
+            decimals: 18
+        },
+        rpcUrls: ['https://testnet.gton.network/'],
+        blockExplorerUrls: ['https://explorer.testnet.gton.network/']
+    },
+    {
+        chainId: '0x56CDCC91',
+        chainName: 'Concordium Testnet',
+        nativeCurrency: {
+            name: 'CCD',
+            symbol: 'CCD',
+            decimals: 18
+        },
+        rpcUrls: [''],
+        blockExplorerUrls: ['']
+    },
+    {
+        chainId: '0x56CDCC96',
+        chainName: 'Concordium Mainnet',
+        nativeCurrency: {
+            name: 'CCD',
+            symbol: 'CCD',
+            decimals: 18
+        },
+        rpcUrls: [''],
+        blockExplorerUrls: ['']
+    }
+];
+
 async function loadApp() {
   provider = new ethers.providers.Web3Provider(window.ethereum, "any");
   signer = provider.getSigner();
@@ -15,7 +205,7 @@ async function loadApp() {
   processAction();
 }
 
-function processAction() {
+async function processAction() {
   const urlParams = new URLSearchParams(window.location.search);
   const action = urlParams.get("action");
   const message = urlParams.get("message");
@@ -25,6 +215,34 @@ function processAction() {
   const data = urlParams.get("data") || "";
   const gasLimit = urlParams.get("gasLimit") || undefined;
   const gasPrice = urlParams.get("gasPrice") || undefined;
+  
+  if (chainId)
+  {
+  	const chainIdHex = "0x" + parseInt(chainId, 10).toString(16);
+  	console.log(chainIdHex);
+  	// Check if the required chain is already present
+  	const network = await provider.getNetwork();
+  	console.log(network.chainId);
+  	if (isNetworkPresent(chainIdHex, network)) {
+    // The chainId is already present in Metamask
+    // Perform your logic here
+  } else {
+    const requiredNetwork = desiredNetworks.find((network) => network.chainId === chainIdHex);
+
+    if (requiredNetwork) {
+      try {
+        await addNetworkToMetamask(requiredNetwork);
+      } catch (error) {
+        console.error("Failed to add the required chain to Metamask:", error);
+        displayResponse("Failed to add the required chain to Metamask");
+        return;
+      }
+    } else {
+      displayResponse("Network not supported for adding!");
+      return;
+    }
+  }
+  }
 
   if (action === "sign" && message) {
     return signMessage(message);
@@ -110,4 +328,26 @@ function displayResponse(text, response) {
     responseButton.className = "active";
     responseButton.onclick = () => copyToClipboard(response);
   }
+}
+
+async function addNetworkToMetamask(network) {
+  try {
+    // Add the required chain to Metamask
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [network],
+    });
+  } catch (error) {
+    console.error("Failed to add the required chain to Metamask:", error);
+    throw new Error("Failed to add the required chain to Metamask");
+  }
+}
+
+function isNetworkPresent(chainId, provider) {
+  if (!provider.networks) {
+    return false; // Handle the case when provider.networks is null or undefined
+  }
+
+  const providerNetworks = Object.keys(provider.networks).map(Number);
+  return providerNetworks.includes(chainId);
 }
