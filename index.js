@@ -241,18 +241,12 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
 		    });
 		    network = await provider.getNetwork();
 	    } catch (switchError) {
-	    	if (switchError.code === 4902) {
-				try {
-					await handleChainId(chainId, network)
-				} catch {
-					copyToClipboard("error");
-					return;
-				}
-	    	} else {
-	    		copyToClipboard("error");
-	    		displayResponse("Failed to change chain");
-	    		return;
-	    	}
+			try {
+				await handleChainId(chainId, network)
+			} catch {
+				copyToClipboard("error");
+				return;
+			}
     	}
     	console.log(network.chainId);
     	await new Promise((resolve) => setTimeout(resolve, 100));
@@ -270,8 +264,8 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
     console.log({ tx });
     displayResponse("Transaction sent.<br><br>Copy to clipboard then continue to App", tx.hash);
   } catch (error) {
+  	displayResponse("Transaction Denied");
     copyToClipboard("error");
-    displayResponse("Transaction Denied");
   }
 }
 
@@ -282,8 +276,9 @@ async function signMessage(message) {
     console.log({ signature });
     displayResponse("Signature complete.<br><br>Copy to clipboard then continue to App", signature);
   } catch (error) {
+  	displayResponse("Signature Denied");
     copyToClipboard("error");
-    displayResponse("Signature Denied");
+
   }
 }
 
