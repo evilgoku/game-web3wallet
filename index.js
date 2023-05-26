@@ -215,34 +215,6 @@ async function processAction() {
   const data = urlParams.get("data") || "";
   const gasLimit = urlParams.get("gasLimit") || undefined;
   const gasPrice = urlParams.get("gasPrice") || undefined;
-  
-  if (chainId)
-  {
-  	const chainIdHex = "0x" + parseInt(chainId, 10).toString(16);
-  	console.log(chainIdHex);
-  	// Check if the required chain is already present
-  	const network = await provider.getNetwork();
-  	console.log(network.chainId);
-  	if (isNetworkPresent(chainIdHex, network)) {
-    // The chainId is already present in Metamask
-    // Perform your logic here
-  } else {
-    const requiredNetwork = desiredNetworks.find((network) => network.chainId === chainIdHex);
-
-    if (requiredNetwork) {
-      try {
-        await addNetworkToMetamask(requiredNetwork);
-      } catch (error) {
-        console.error("Failed to add the required chain to Metamask:", error);
-        displayResponse("Failed to add the required chain to Metamask");
-        return;
-      }
-    } else {
-      displayResponse("Network not supported for adding!");
-      return;
-    }
-  }
-  }
 
   if (action === "sign" && message) {
     return signMessage(message);
@@ -258,13 +230,34 @@ async function processAction() {
 async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    const network = await provider.getNetwork();
-    if (network.chainId !== chainId) {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${parseInt(chainId, 10).toString(16)}` }], // chainId must be in hexadecimal numbers
-      });
+    let network = await provider.getNetwork();
+
+    console.log(chainId);
+    while (network.chainId != chainId) {
+	    try{
+	    	await window.ethereum.request({
+		        	method: "wallet_switchEthereumChain",
+		        params: [{ chainId: `0x${parseInt(chainId, 10).toString(16)}` }], // chainId must be in hexadecimal numbers
+		    });
+		    network = await provider.getNetwork();
+	    } catch (switchError) {
+	    	if (switchError.code === 4902) {
+				try {
+					await handleChainId(chainId, network)
+				} catch {
+					copyToClipboard("error");
+					return;
+				}
+	    	} else {
+	    		copyToClipboard("error");
+	    		displayResponse("Failed to change chain");
+	    		return;
+	    	}
+    	}
+    	console.log(network.chainId);
+    	await new Promise((resolve) => setTimeout(resolve, 100));
     }
+
     const from = await signer.getAddress();
     const tx = await signer.sendTransaction({
       from,
@@ -296,6 +289,9 @@ async function signMessage(message) {
 
 async function copyToClipboard(response) {
   try {
+  	const deepLinkUrl = "motodex://?response="+response;
+	executeDeepLink(deepLinkUrl);
+
     // focus from metamask back to browser
     window.focus();
     // wait to finish focus
@@ -343,11 +339,37 @@ async function addNetworkToMetamask(network) {
   }
 }
 
-function isNetworkPresent(chainId, provider) {
-  if (!provider.networks) {
-    return false; // Handle the case when provider.networks is null or undefined
+function executeDeepLink(url) {
+  // Use the appropriate method to execute the deep link based on the platform
+  
+  // For Android
+  if (navigator.userAgent.match(/Android/i)) {
+    window.location.href = url;
   }
+  
+  // For iOS
+  if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+    window.location.replace(url);
+  }
+}
 
-  const providerNetworks = Object.keys(provider.networks).map(Number);
-  return providerNetworks.includes(chainId);
+async function handleChainId(chainId, network) {
+	const chainIdHex = "0x" + parseInt(chainId, 10).toString(16);
+	console.log(chainIdHex);
+	console.log(network.chainId);
+    const requiredNetwork = desiredNetworks.find((network) => network.chainId.toLowerCase() === chainIdHex.toLowerCase());
+
+	if (requiredNetwork) {
+	  try {
+	    await addNetworkToMetamask(requiredNetwork);
+	  } catch (error) {
+	    console.error("Failed to add the required chain to Metamask:", error);
+	    displayResponse("Failed to add the required chain to Metamask");
+	    throw new Error('Failed to add the required chain to Metamask');
+	  }
+	} else {
+	  displayResponse("Network not supported for adding!");
+	  throw new Error('Network not supported for adding!');
+	}
+  
 }
