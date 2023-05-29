@@ -338,9 +338,9 @@ function executeDeepLink(url) {
   // Use the appropriate method to execute the deep link based on the platform
   
   // For Android
-  if (navigator.userAgent.match(/Android/i)) {
-    window.location.href = url;
-  }
+  //if (navigator.userAgent.match(/Android/i)) {
+  window.location.href = url;
+  //}
   
   // For iOS
   if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
