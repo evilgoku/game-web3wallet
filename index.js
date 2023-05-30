@@ -339,7 +339,7 @@ function executeDeepLink(url) {
   
   // For Android
   if (navigator.userAgent.match(/Android/i)) {
-    window.location.href = url;
+    window.open(url);
   }
   
   // For iOS
