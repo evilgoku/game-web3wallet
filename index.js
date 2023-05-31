@@ -244,7 +244,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
 			try {
 				await handleChainId(chainId, network)
 			} catch {
-				copyToClipboard("error");
+				await copyToClipboard("error");
 				return;
 			}
     	}
@@ -265,7 +265,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
     displayResponse("Transaction sent.<br><br>Copy to clipboard then continue to App", tx.hash);
   } catch (error) {
   	displayResponse("Transaction Denied");
-    copyToClipboard("error");
+    await copyToClipboard("error");
   }
 }
 
@@ -277,7 +277,7 @@ async function signMessage(message) {
     displayResponse("Signature complete.<br><br>Copy to clipboard then continue to App", signature);
   } catch (error) {
   	displayResponse("Signature Denied");
-    copyToClipboard("error");
+    await copyToClipboard("error");
 
   }
 }
@@ -285,14 +285,12 @@ async function signMessage(message) {
 async function copyToClipboard(response) {
   try {
   	const deepLinkUrl = "motodex://?response="+response;
+	executeDeepLink(deepLinkUrl);
 
     // focus from metamask back to browser
     window.focus();
     // wait to finish focus
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-    executeDeepLink(deepLinkUrl);
-
     // copy tx hash to clipboard
     await navigator.clipboard.writeText(response);
     document.getElementById("response-button").innerHTML = "Copied";
