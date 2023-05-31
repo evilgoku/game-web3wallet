@@ -244,7 +244,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
 			try {
 				await handleChainId(chainId, network)
 			} catch {
-				await copyToClipboard("error");
+				copyToClipboard("error");
 				return;
 			}
     	}
@@ -265,7 +265,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
     displayResponse("Transaction sent.<br><br>Copy to clipboard then continue to App", tx.hash);
   } catch (error) {
   	displayResponse("Transaction Denied");
-    await copyToClipboard("error");
+    copyToClipboard("error");
   }
 }
 
@@ -277,7 +277,7 @@ async function signMessage(message) {
     displayResponse("Signature complete.<br><br>Copy to clipboard then continue to App", signature);
   } catch (error) {
   	displayResponse("Signature Denied");
-    await copyToClipboard("error");
+    copyToClipboard("error");
 
   }
 }
@@ -285,12 +285,15 @@ async function signMessage(message) {
 async function copyToClipboard(response) {
   try {
   	const deepLinkUrl = "motodex://?response="+response;
-	executeDeepLink(deepLinkUrl);
 
     // focus from metamask back to browser
     window.focus();
     // wait to finish focus
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await waitForFocus();
+    //await new Promise((resolve) => setTimeout(resolve, 500));
+    
+    executeDeepLink(deepLinkUrl);
+
     // copy tx hash to clipboard
     await navigator.clipboard.writeText(response);
     document.getElementById("response-button").innerHTML = "Copied";
@@ -346,6 +349,19 @@ function executeDeepLink(url) {
   if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
     window.location.replace(url);
   }
+}
+
+function waitForFocus() {
+  return new Promise((resolve) => {
+    const checkFocus = () => {
+      if (document.hasFocus()) {
+        resolve();
+      } else {
+        setTimeout(checkFocus, 100);
+      }
+    };
+    checkFocus();
+  });
 }
 
 async function handleChainId(chainId, network) {
