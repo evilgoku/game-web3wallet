@@ -244,7 +244,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
 			try {
 				await handleChainId(chainId, network)
 			} catch {
-				copyToClipboard("error");
+				errorHandler("error");
 				return;
 			}
     	}
@@ -265,7 +265,7 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
     displayResponse("Transaction sent.<br><br>Copy to clipboard then continue to App", tx.hash);
   } catch (error) {
   	displayResponse("Transaction Denied");
-    copyToClipboard("error");
+    errorHandler("error");
   }
 }
 
@@ -277,7 +277,7 @@ async function signMessage(message) {
     displayResponse("Signature complete.<br><br>Copy to clipboard then continue to App", signature);
   } catch (error) {
   	displayResponse("Signature Denied");
-    copyToClipboard("error");
+    errorHandler("error");
 
   }
 }
@@ -313,10 +313,7 @@ function displayResponse(text, response) {
   responseText.innerHTML = text;
   responseText.className = "active";
 
-  if (response || text === "error") {
-  	if (text === "error"){
-  		response = "error";
-  	}
+  if (response) {
     // display button to copy tx.hash or signature
     const responseButton = document.getElementById("response-button");
     responseButton.className = "active";
@@ -349,6 +346,12 @@ function executeDeepLink(url) {
   if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
     window.location.replace(url);
   }
+}
+
+function errorHandler(response){
+	const responseButton = document.getElementById("response-button");
+    responseButton.className = "active";
+    responseButton.onclick = () => copyToClipboard(response);
 }
 
 async function handleChainId(chainId, network) {
