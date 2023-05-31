@@ -285,15 +285,12 @@ async function signMessage(message) {
 async function copyToClipboard(response) {
   try {
   	const deepLinkUrl = "motodex://?response="+response;
+	executeDeepLink(deepLinkUrl);
 
     // focus from metamask back to browser
     window.focus();
     // wait to finish focus
-    await waitForFocus();
-    //await new Promise((resolve) => setTimeout(resolve, 500));
-    
-    executeDeepLink(deepLinkUrl);
-
+    await new Promise((resolve) => setTimeout(resolve, 500));
     // copy tx hash to clipboard
     await navigator.clipboard.writeText(response);
     document.getElementById("response-button").innerHTML = "Copied";
@@ -316,7 +313,10 @@ function displayResponse(text, response) {
   responseText.innerHTML = text;
   responseText.className = "active";
 
-  if (response) {
+  if (response || text === "error") {
+  	if (text === "error"){
+  		response = "error";
+  	}
     // display button to copy tx.hash or signature
     const responseButton = document.getElementById("response-button");
     responseButton.className = "active";
@@ -349,19 +349,6 @@ function executeDeepLink(url) {
   if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
     window.location.replace(url);
   }
-}
-
-function waitForFocus() {
-  return new Promise((resolve) => {
-    const checkFocus = () => {
-      if (document.hasFocus()) {
-        resolve();
-      } else {
-        setTimeout(checkFocus, 100);
-      }
-    };
-    checkFocus();
-  });
 }
 
 async function handleChainId(chainId, network) {
