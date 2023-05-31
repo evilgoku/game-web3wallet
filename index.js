@@ -264,8 +264,8 @@ async function sendTransaction(chainId, to, value, gasLimit, gasPrice, data) {
     console.log({ tx });
     displayResponse("Transaction sent.<br><br>Copy to clipboard then continue to App", tx.hash);
   } catch (error) {
+  	copyToClipboard("error");
   	displayResponse("Transaction Denied");
-    copyToClipboard("error");
   }
 }
 
@@ -276,8 +276,9 @@ async function signMessage(message) {
     console.log({ signature });
     displayResponse("Signature complete.<br><br>Copy to clipboard then continue to App", signature);
   } catch (error) {
+  	copyToClipboard("error");
   	displayResponse("Signature Denied");
-    copyToClipboard("error");
+    
 
   }
 }
