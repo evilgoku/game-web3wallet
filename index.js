@@ -38,7 +38,7 @@ const desiredNetworks = [
             symbol: 'MATIC',
             decimals: 18
         },
-        rpcUrls: ['https://polygon-rpc.com/'],
+        rpcUrls: ['https://polygon.llamarpc.com/'], // 'https://polygon-rpc.com'
         blockExplorerUrls: ['https://polygonscan.com/']
     },
     {
@@ -60,7 +60,7 @@ const desiredNetworks = [
             symbol: 'ETH',
             decimals: 18
         },
-        rpcUrls: ['https://mainnet.aurora.dev'],
+        rpcUrls: ['https://endpoints.omniatech.io/v1/aurora/mainnet/public'], // 'https://mainnet.aurora.dev'
         blockExplorerUrls: ['https://explorer.aurora.dev/']
     },
     {
